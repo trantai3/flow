@@ -295,7 +295,7 @@
             overflow-y: auto;
             background: #fff8fb;
             border-radius: 20px;
-            padding: 30px 28px 22px;
+            padding: 18px 20px 22px;
             text-align: center;
             box-shadow: 0 0 26px 6px rgba(255, 140, 170, .55);
             transform: scale(.3) rotate(-6deg);
@@ -304,9 +304,23 @@
 
         #letterWrap.open .letter { transform: none; }
 
-        .letter h2 { color: var(--pink-500); font-size: 26px; margin-bottom: 14px; }
+        .letter-photo-frame {
+            margin: 0 auto 18px;
+            width: min(100%, 340px);
+        }
 
-        .letter .message { font-size: 17px; line-height: 1.75; white-space: pre-line; min-height: 2em; }
+        .letter-photo {
+            display: block;
+            width: 100%;
+            max-height: min(43vh, 360px);
+            object-fit: contain;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .letter h2 { color: var(--pink-500); font-size: 26px; line-height: 1.25; margin-bottom: 12px; }
+
+        .letter .message { font-size: 17px; line-height: 1.75; white-space: pre-line; min-height: 2em; padding: 0 4px; }
 
         .letter .message::after { content: "|"; color: var(--pink-500); animation: blink 1s steps(1) infinite; }
         .letter .message.done::after { content: ""; }
@@ -472,7 +486,7 @@
     <!-- Màn 1 -->
     <section id="intro">
         <button class="bunny-card" id="bunny" aria-label="Chạm vào bé thỏ"></button>
-        <p class="intro-hint">Chạm vào hoa nhé</p>
+        <p class="intro-hint">Bé chạm vào đây nhớ</p>
     </section>
 
     <!-- Màn 2 -->
@@ -510,6 +524,9 @@
     <!-- Lá thư -->
     <div id="letterWrap">
         <article class="letter">
+            <div class="letter-photo-frame">
+                <img class="letter-photo" id="letterPhoto" src="./assets/a/nhims.jpg" alt="Kỷ niệm của chúng mình">
+            </div>
             <h2 id="letterTitle"></h2>
             <p class="message" id="message"></p>
             <p class="sign" id="sign"></p>
@@ -527,19 +544,20 @@
     <script src="./assets/js/share.js"></script>
     <script>
         /* =====================================================
-         *  NỘI DUNG MẶC ĐỊNH — dùng khi mở trang không kèm link quà.
-         *  Muốn đổi nhanh thì dùng form create.html để tạo link.
+         *  NỘI DUNG MẶC ĐỊNH — dùng khi mở trực tiếp flower.html.
+         *  Có thể thay đổi nhanh nội dung trong CONFIG bên dưới.
          * ===================================================== */
         const CONFIG = {
-            name: "Hưng",                          // chữ to trên bó hoa
+            name: "Tặng Nhím",                          // chữ to trên bó hoa
             letterTitle: "Gửi em, nhân ngày 20/10",
             message:
                 "Chúc em ngày 20/10 thật nhiều niềm vui,\n" +
                 "luôn xinh đẹp, khỏe mạnh và cười thật tươi.\n" +
                 "Cảm ơn em vì đã luôn ở bên anh.\n" +
                 "Bó hoa này là dành riêng cho em đó 🌷",
-            sender: "Hưng",
-            music: "",                            // link mp3, để trống = không nhạc
+            sender: "Tài",
+            music: "./n/canon-in-d.mp3",          // nhạc nền mặc định
+            letterPhoto: "./assets/a/nhims.jpg",  // ảnh hiện trong lá thư
             photos: [],                          // ảnh kỷ niệm bay lượn
             photoCount: 7,                       // số ảnh bay cùng lúc
         };
@@ -558,11 +576,12 @@
             document.title = CONFIG.name || document.title;
             $("letterTitle").textContent = CONFIG.letterTitle;
             $("sign").textContent = CONFIG.sender;
+            $("letterPhoto").src = CONFIG.letterPhoto || "./assets/a/nhims.jpg";
             if (CONFIG.music) bgm.src = CONFIG.music;
             else bgm.removeAttribute("src");
         }
 
-        // Link tạo từ create.html mang nội dung trong phần #d=...
+        // Link có dữ liệu tuỳ chỉnh mang nội dung trong phần #d=...
         async function loadGiftFromLink() {
             const code = GiftShare.giftCodeFromLocation();
             if (!code) return;
