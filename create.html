@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Làm Quà Tặng Nàng</title>
+    <link rel="icon" href="./assets/a/icon1.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pink-50: #fff6f8;
+            --pink-300: #f8a9bb;
+            --pink-500: #ff6f91;
+            --pink-600: #f0436f;
+            --ink: #4a3a40;
+            --muted: #9a8d92;
+            --line: #ecdfe3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Mali', cursive;
+            color: var(--ink);
+            background: linear-gradient(160deg, #f3eef0, #fde7ee);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            border-radius: 28px;
+            padding: 32px 28px 28px;
+            box-shadow: 0 12px 40px rgba(160, 100, 120, .15);
+            height: fit-content;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--pink-500);
+            font-size: clamp(26px, 7vw, 34px);
+            margin-bottom: 22px;
+        }
+
+        .field { margin-bottom: 14px; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 8px 4px;
+        }
+
+        input[type=text], textarea, select {
+            width: 100%;
+            font: inherit;
+            font-size: 16px;
+            color: var(--ink);
+            border: 1.5px solid var(--line);
+            border-radius: 16px;
+            padding: 12px 16px;
+            background: #fff;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input[type=text]:focus, textarea:focus, select:focus {
+            border-color: var(--pink-300);
+            box-shadow: 0 0 0 4px rgba(255, 111, 145, .12);
+        }
+
+        textarea { min-height: 110px; resize: vertical; line-height: 1.6; }
+
+        select { text-align: center; cursor: pointer; }
+
+        .count { text-align: right; font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+        .btn {
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 13px;
+            font: inherit;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(90deg, #ff7a93, #ff86b4);
+            box-shadow: 0 6px 16px rgba(255, 111, 145, .35);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255, 111, 145, .45); }
+        .btn:active { transform: none; }
+
+        .btn.big { font-size: 20px; padding: 15px; margin-top: 22px; }
+
+        .btn.ghost {
+            background: #fff;
+            color: var(--pink-600);
+            border: 1.5px solid var(--pink-300);
+            box-shadow: none;
+        }
+
+        .photos { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+        .thumb {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--pink-300);
+        }
+
+        .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .thumb button {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, .55);
+            color: #fff;
+            font-size: 13px;
+            line-height: 20px;
+            cursor: pointer;
+        }
+
+        .note { font-size: 13px; color: var(--muted); margin: 6px 4px 0; }
+
+        #result { display: none; margin-top: 20px; }
+        #result.show { display: block; }
+
+        #link {
+            width: 100%;
+            font: 13px/1.4 ui-monospace, Consolas, monospace;
+            color: var(--ink);
+            border: 1.5px dashed var(--pink-300);
+            border-radius: 14px;
+            padding: 10px 12px;
+            background: var(--pink-50);
+            height: 72px;
+            resize: none;
+            word-break: break-all;
+        }
+
+        .row { display: flex; gap: 10px; margin-top: 10px; }
+        .row .btn { flex: 1; }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            translate: -50% 0;
+            background: var(--ink);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity .3s;
+            pointer-events: none;
+        }
+
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+
+<body>
+    <form class="card" id="form" autocomplete="off">
+        <h1>Làm Quà Tặng Nàng</h1>
+
+        <div class="field">
+            <label for="name">Thông điệp đầu (Ví dụ: Bó hoa tặng nàng)</label>
+            <input type="text" id="name" maxlength="40" placeholder="Nhập điều bất ngờ...">
+            <div class="count" data-for="name"></div>
+        </div>
+
+        <div class="field">
+            <label for="letterTitle">Tiêu đề thư</label>
+            <input type="text" id="letterTitle" maxlength="50" placeholder="Gửi người thương...">
+            <div class="count" data-for="letterTitle"></div>
+        </div>
+
+        <div class="field">
+            <label for="message">Lời nhắn nhủ</label>
+            <textarea id="message" maxlength="320" placeholder="Viết những lời tình tứ nhất..."></textarea>
+            <div class="count" data-for="message"></div>
+        </div>
+
+        <div class="field">
+            <label for="sender">Ký tên</label>
+            <input type="text" id="sender" maxlength="50" placeholder="Ký tên anh...">
+            <div class="count" data-for="sender"></div>
+        </div>
+
+        <div class="field">
+            <label>Ảnh kỷ niệm (Bay lượn)</label>
+            <button type="button" class="btn" id="pickPhoto">Chọn hoặc Upload ảnh</button>
+            <input type="file" id="photoInput" accept="image/*" multiple hidden>
+            <div class="photos" id="photos"></div>
+            <p class="note">Tối đa 3 ảnh. Ảnh được thu nhỏ và gói luôn vào link.</p>
+        </div>
+
+        <div class="field">
+            <label for="photoCount">Số ảnh bay trên màn hình</label>
+            <select id="photoCount"></select>
+        </div>
+
+        <div class="field">
+            <label for="music">Nhạc nền</label>
+            <select id="music"></select>
+            <input type="text" id="musicUrl" placeholder="https://.../bai-hat.mp3" style="margin-top: 10px; display: none">
+            <p class="note" id="musicNote" style="display: none">Link trực tiếp tới file .mp3 (mở link là nghe được ngay). Chỉ dùng nhạc bạn có quyền chia sẻ.</p>
+            <p class="note">Nhạc có sẵn: Kevin MacLeod (<a href="https://incompetech.com" target="_blank" rel="noopener">incompetech.com</a>), giấy phép <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+        </div>
+
+        <button type="submit" class="btn big">Tạo Link ✈</button>
+
+        <div id="result">
+            <label for="link">Link quà của bạn 💝</label>
+            <textarea id="link" readonly></textarea>
+            <div class="row">
+                <button type="button" class="btn" id="copyLink">Sao chép</button>
+                <button type="button" class="btn ghost" id="openLink">Xem thử</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="./assets/js/share.js"></script>
+    <script>
+        /* =====================================================
+         *  Danh sách nhạc: thả file .mp3 vào thư mục n/ rồi thêm 1 dòng ở đây
+         *  Nhạc có sẵn: Kevin MacLeod (incompetech.com), giấy phép CC BY 4.0
+         * ===================================================== */
+        const CUSTOM = "__custom__";
+        const MUSIC = [
+            { label: "Canon in D (đàn hạc)", src: "./n/canon-in-d.mp3" },
+            { label: "Crinoline Dreams (piano & violin)", src: "./n/crinoline-dreams.mp3" },
+            { label: "Dreamer (piano)", src: "./n/dreamer.mp3" },
+            { label: "Evening (guitar & cello)", src: "./n/evening.mp3" },
+            { label: "Morning (guitar & đàn hạc)", src: "./n/morning.mp3" },
+            { label: "Smooth Lovin", src: "./n/smooth-lovin.mp3" },
+            { label: "Fresh Air (piano)", src: "./n/fresh-air.mp3" },
+            { label: "Không phát nhạc", src: "" },
+            { label: "Dán link nhạc mp3...", src: CUSTOM },
+        ];
+
+        // Nội dung điền sẵn lần đầu mở form
+        const DEFAULTS = {
+            name: "Hưng",
+            letterTitle: "Gửi em, nhân ngày 20/10",
+            message:
+                "Chúc em ngày 20/10 thật nhiều niềm vui,\n" +
+                "luôn xinh đẹp, khỏe mạnh và cười thật tươi.\n" +
+                "Cảm ơn em vì đã luôn ở bên anh.\n" +
+                "Bó hoa này là dành riêng cho em đó 🌷",
+            sender: "Hưng",
+        };
+
+        const MAX_PHOTOS = 3;
+        const PHOTO_SIZE = 180;      // cạnh dài tối đa (px) sau khi thu nhỏ
+        const DRAFT_KEY = "gift-draft";
+        const TEXT_FIELDS = ["name", "letterTitle", "message", "sender"];
+
+        const $ = (id) => document.getElementById(id);
+        let photos = [];             // mảng data URL (jpeg nhỏ)
+
+        function toast(text) {
+            const t = $("toast");
+            t.textContent = text;
+            t.classList.add("show");
+            clearTimeout(toast.timer);
+            toast.timer = setTimeout(() => t.classList.remove("show"), 1800);
+        }
+
+        /* ---------- Bộ đếm ký tự ---------- */
+        function updateCount(id) {
+            const input = $(id);
+            document.querySelector(`.count[data-for="${id}"]`).textContent =
+                `${Array.from(input.value).length} / ${input.maxLength}`;
+        }
+
+        /* ---------- Nhạc ---------- */
+        MUSIC.forEach((m) => $("music").add(new Option(m.label, m.src)));
+
+        function toggleMusicUrl() {
+            const custom = $("music").value === CUSTOM;
+            $("musicUrl").style.display = custom ? "block" : "none";
+            $("musicNote").style.display = custom ? "block" : "none";
+        }
+
+        /* ---------- Số ảnh bay ---------- */
+        for (let n = 1; n <= 15; n++) $("photoCount").add(new Option(n + " ảnh", n));
+        $("photoCount").value = 7;
+
+        /* ---------- Ảnh ---------- */
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+
+        async function shrink(src) {
+            const img = await loadImage(src);
+            const scale = Math.min(1, PHOTO_SIZE / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL("image/jpeg", 0.72);
+        }
+
+        function renderPhotos() {
+            const box = $("photos");
+            box.innerHTML = "";
+            photos.forEach((src, i) => {
+                const t = document.createElement("div");
+                t.className = "thumb";
+                t.innerHTML = `<img src="${src}" alt=""><button type="button" aria-label="Xoá ảnh">×</button>`;
+                t.querySelector("button").onclick = () => {
+                    photos.splice(i, 1);
+                    renderPhotos();
+                    saveDraft();
+                };
+                box.appendChild(t);
+            });
+            $("pickPhoto").textContent = photos.length >= MAX_PHOTOS ? "Đã đủ 3 ảnh" : "Chọn hoặc Upload ảnh";
+        }
+
+        $("pickPhoto").onclick = () => {
+            if (photos.length >= MAX_PHOTOS) return toast("Tối đa 3 ảnh thôi nha");
+            $("photoInput").click();
+        };
+
+        $("photoInput").onchange = async (e) => {
+            const files = Array.from(e.target.files).slice(0, MAX_PHOTOS - photos.length);
+            for (const file of files) {
+                const url = URL.createObjectURL(file);
+                try { photos.push(await shrink(url)); }
+                catch { toast("Không đọc được ảnh " + file.name); }
+                finally { URL.revokeObjectURL(url); }
+            }
+            e.target.value = "";
+            renderPhotos();
+            saveDraft();
+        };
+
+        /* ---------- Lưu nháp trong trình duyệt ---------- */
+        function collect() {
+            const data = {};
+            TEXT_FIELDS.forEach((id) => (data[id] = $(id).value.trim()));
+            data.music = $("music").value === CUSTOM ? $("musicUrl").value.trim() : $("music").value;
+            data.photoCount = Number($("photoCount").value);
+            data.photos = photos;
+            return data;
+        }
+
+        function saveDraft() {
+            try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collect())); } catch { }
+        }
+
+        function loadDraft() {
+            try { return JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch { return null; }
+        }
+
+        /* ---------- Khởi tạo ---------- */
+        (async function init() {
+            const draft = loadDraft();
+            TEXT_FIELDS.forEach((id) => {
+                $(id).value = draft ? draft[id] ?? "" : DEFAULTS[id];
+                updateCount(id);
+                $(id).addEventListener("input", () => { updateCount(id); saveDraft(); });
+            });
+            if (draft && draft.music) {
+                const known = MUSIC.some((m) => m.src === draft.music);
+                $("music").value = known ? draft.music : CUSTOM;
+                if (!known) $("musicUrl").value = draft.music;
+            }
+            toggleMusicUrl();
+            $("music").addEventListener("change", () => { toggleMusicUrl(); saveDraft(); });
+            $("musicUrl").addEventListener("input", saveDraft);
+            if (draft && draft.photoCount) $("photoCount").value = draft.photoCount;
+            $("photoCount").addEventListener("change", saveDraft);
+
+            if (draft && Array.isArray(draft.photos)) {
+                photos = draft.photos.slice(0, MAX_PHOTOS);
+            } else {
+                photos = [];
+            }
+            renderPhotos();
+        })();
+
+        /* ---------- Tạo link ---------- */
+        $("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = collect();
+            if (!data.name && !data.message) return toast("Viết gì đó cho nàng đã nè 💌");
+
+            const code = await GiftShare.encodeGift(data);
+            const url = new URL("flower.html", location.href);
+            url.hash = "d=" + code;
+            $("link").value = url.href;
+            $("result").classList.add("show");
+            $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+
+        $("copyLink").onclick = async () => {
+            try {
+                await navigator.clipboard.writeText($("link").value);
+            } catch {
+                $("link").select();
+                document.execCommand("copy");
+            }
+            toast("Đã sao chép link 💖");
+        };
+
+        $("openLink").onclick = () => window.open($("link").value, "_blank");
+    </script>
+</body>
+
+</html>
