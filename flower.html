@@ -525,7 +525,7 @@
     <div id="letterWrap">
         <article class="letter">
             <div class="letter-photo-frame">
-                <img class="letter-photo" id="letterPhoto" src="./assets/a/nhims.jpg" alt="Kỷ niệm của chúng mình">
+                <img class="letter-photo" id="letterPhoto" src="./assets/a/nhim_cuoi_xinh.jpg" alt="Kỷ niệm của chúng mình">
             </div>
             <h2 id="letterTitle"></h2>
             <p class="message" id="message"></p>
@@ -557,7 +557,7 @@
                 "Bó hoa này là dành riêng cho em đó 🌷",
             sender: "Tài",
             music: "./n/canon-in-d.mp3",          // nhạc nền mặc định
-            letterPhoto: "./assets/a/nhims.jpg",  // ảnh hiện trong lá thư
+            letterPhoto: "./assets/a/nhim_cuoi_xinh.jpg",  // ảnh hiện trong lá thư
             photos: [],                          // ảnh kỷ niệm bay lượn
             photoCount: 7,                       // số ảnh bay cùng lúc
         };
@@ -576,7 +576,7 @@
             document.title = CONFIG.name || document.title;
             $("letterTitle").textContent = CONFIG.letterTitle;
             $("sign").textContent = CONFIG.sender;
-            $("letterPhoto").src = CONFIG.letterPhoto || "./assets/a/nhims.jpg";
+            $("letterPhoto").src = CONFIG.letterPhoto || "./assets/a/nhim_cuoi_xinh.jpg";
             if (CONFIG.music) bgm.src = CONFIG.music;
             else bgm.removeAttribute("src");
         }
